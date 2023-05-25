@@ -2,7 +2,7 @@
 
 ---
 ![img.png](readme_img/img.png)
-[<h3 align="center">Демострация</h3>](https://t.me/New_Lijia_bot)
+# [Демонстрация](https://t.me/New_Lijia_bot)
 ___
 ### Описание бота
 ___
