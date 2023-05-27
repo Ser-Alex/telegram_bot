@@ -12,3 +12,4 @@ else:
 # переменные загруженные из файла .env
 bot_api_token = os.getenv("BOT_API_TOKEN")
 keys_api = [os.getenv('API_KEY_1'), os.getenv('API_KEY_2'), os.getenv('API_KEY_3')]
+path_data = os.path.join('database', 'bot_data.db')
