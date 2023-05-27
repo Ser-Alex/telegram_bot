@@ -1,5 +1,39 @@
 import sqlite3
 from main import logging
+from config_bot.config import path_data
+import os.path
+
+
+def start_data() -> None:
+    """
+    Функция проверки существования базы данных, и создания её, если таковой не имеется
+    """
+    if os.path.exists(path_data):
+        return
+
+    try:
+        sqlite_connection = sqlite3.connect(path_data)
+        sqlite_create_table_user_location = '''CREATE TABLE  user_location(
+                                    id INTEGER ,
+                                    country TEXT NOT NULL,
+                                    city TEXT NOT NULL );'''
+
+        sqlite_create_table_user_history = '''CREATE TABLE  user_history(
+                                    id INTEGER ,
+                                    history TEXT NOT NULL);'''
+
+        cursor = sqlite_connection.cursor()
+        cursor.execute(sqlite_create_table_user_location)
+
+        cursor = sqlite_connection.cursor()
+        cursor.execute(sqlite_create_table_user_history)
+
+        sqlite_connection.commit()
+        cursor.close()
+        sqlite_connection.close()
+
+    except sqlite3.Error:
+        logging.error('sqlite3.Error', exc_info=True)
 
 
 def user_exist(user_id: int) -> bool:
@@ -9,8 +43,9 @@ def user_exist(user_id: int) -> bool:
     :param user_id: передаётся id пользователя
     :return: bool
     """
+    start_data()
     try:
-        sqlite_connection = sqlite3.connect('database/bot_data.db')
+        sqlite_connection = sqlite3.connect(path_data)
         cursor = sqlite_connection.cursor()
 
         sql_select = """select * from user_location where id = ?"""
@@ -35,8 +70,9 @@ def user_info(user_id: int) -> tuple[str, str] or False:
     :param user_id: передаётся id пользователя
     :return: кортеж(Страна, город) или False
     """
+    start_data()
     try:
-        sqlite_connection = sqlite3.connect('database/bot_data.db')
+        sqlite_connection = sqlite3.connect(path_data)
         cursor = sqlite_connection.cursor()
         sql_select = """select * from user_location where id = ?"""
         cursor.execute(sql_select, (user_id,))
@@ -59,8 +95,9 @@ def new_user(user_id: int, country: str, city: str) -> None:
     :param country: передаётся название страны
     :param city: передаётся название города
     """
+    start_data()
     try:
-        sqlite_connection = sqlite3.connect('database/bot_data.db')
+        sqlite_connection = sqlite3.connect(path_data)
         cursor = sqlite_connection.cursor()
         sql_insert = """INSERT INTO user_location
                           (id, country, city)
@@ -84,8 +121,9 @@ def update_user_info(user_id: int, country: str, city: str) -> None:
     :param country: передаётся название страны
     :param city: передаётся название города
     """
+    start_data()
     try:
-        sqlite_connection = sqlite3.connect('database/bot_data.db')
+        sqlite_connection = sqlite3.connect(path_data)
         cursor = sqlite_connection.cursor()
         sql_update = """Update user_location set country = ?, city = ? where id = ?"""
         cursor.execute(sql_update, (country, city, user_id,))
@@ -104,8 +142,9 @@ def check_history(user_id: int) -> bool:
     :param user_id: передаётся id пользователя
     :return: bool
     """
+    start_data()
     try:
-        sqlite_connection = sqlite3.connect('database/bot_data.db')
+        sqlite_connection = sqlite3.connect(path_data)
         cursor = sqlite_connection.cursor()
         sql_select = """select * from user_history where id = ?"""
         cursor.execute(sql_select, (user_id,))
@@ -130,8 +169,9 @@ def new_history(user_id: int, str_history: str) -> None:
     :param user_id: передаётся id пользователя
     :param str_history: передаётся история
     """
+    start_data()
     try:
-        sqlite_connection = sqlite3.connect('database/bot_data.db')
+        sqlite_connection = sqlite3.connect(path_data)
         cursor = sqlite_connection.cursor()
         sql_insert = """INSERT INTO user_history
                                   (id, history)
@@ -153,8 +193,9 @@ def update_history(user_id: int, str_history: str) -> None:
     :param user_id: передаётся id пользователя
     :param str_history: передаётся история
     """
+    start_data()
     try:
-        sqlite_connection = sqlite3.connect('database/bot_data.db')
+        sqlite_connection = sqlite3.connect(path_data)
         cursor = sqlite_connection.cursor()
         sql_select = """select * from user_history where id = ?"""
         cursor.execute(sql_select, (user_id,))
@@ -181,8 +222,9 @@ def get_history_list(user_id: int) -> str:
     :param user_id: передаётся id пользователя
     :return: строку историй запросов
     """
+    start_data()
     try:
-        sqlite_connection = sqlite3.connect('database/bot_data.db')
+        sqlite_connection = sqlite3.connect(path_data)
         cursor = sqlite_connection.cursor()
         sql_select = """select * from user_history where id = ?"""
         cursor.execute(sql_select, (user_id,))
