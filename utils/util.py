@@ -1,5 +1,7 @@
 import datetime
+
 import requests
+
 from database.data import new_history, update_history, check_history
 from config_bot.config import keys_api
 from main import logging

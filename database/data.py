@@ -1,7 +1,8 @@
+import os.path
 import sqlite3
+
 from main import logging
 from config_bot.config import path_data
-import os.path
 
 
 def start_data() -> None:
